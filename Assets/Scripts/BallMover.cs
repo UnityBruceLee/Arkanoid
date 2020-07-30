@@ -176,6 +176,10 @@ public class BallMover : MonoBehaviour
         }
         else
         {
+            if (SceneManager.sceneCountInBuildSettings < SceneManager.GetActiveScene().buildIndex + 1)
+            {
+                return;
+            }
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class LevelGenerator : MonoBehaviour
 {
     [SerializeField]
-    Transform creaturePrefab, roboPrefab, crabPrefab;
+    Transform creaturePrefab, roboPrefab, crabPrefab, questionPrefab;
 
     [SerializeField]
     Transform gridStartPoint;
@@ -15,8 +15,6 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField]
     CanvasGroup storytelling;
 
-    [SerializeField]
-    RawImage fader;
 
     public Transform upBound, downBound, leftBound, rightBound;
 
@@ -49,11 +47,15 @@ public class LevelGenerator : MonoBehaviour
         StartCoroutine(StoryTelling());
 
         string[][] jagged = loadLevel(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-        // create planes based on matrix
+        
         for (int y = 0; y < jagged.Length; y++)
         {
             for (int x = 0; x < jagged[0].Length; x++)
             {
+                if (jagged[y][x] == null)
+                {
+                    return;
+                }
                 switch (jagged[y][x])
                 {
                     case "0":
@@ -67,6 +69,10 @@ public class LevelGenerator : MonoBehaviour
                     case "3":
                         creatures.Add(Instantiate(crabPrefab, new Vector3(gridStartPoint.position.x + (offsetX * x), gridStartPoint.position.y - (offsetY * y), 0), Quaternion.identity));
                         break;
+                    case "4":
+                        creatures.Add(Instantiate(questionPrefab, new Vector3(gridStartPoint.position.x + (offsetX * x), gridStartPoint.position.y - (offsetY * y), 0), Quaternion.identity));
+                        break;
+
                 }
             }
         }
@@ -82,7 +88,7 @@ public class LevelGenerator : MonoBehaviour
             storytelling.alpha = Mathf.Lerp(1, 0, normalizedTime);            
             yield return null;
         }
-        storytelling.alpha = 0;
+        storytelling.gameObject.SetActive(false);
         levelStarted = true;
     }
 }
